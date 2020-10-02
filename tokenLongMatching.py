@@ -14,6 +14,7 @@ words = {
 	2: {},
 	3: {}
 }
+totalLength = 0
 
 f = open("tokenization/stopwords.txt", "r")
 stop_words = f.read().split("\n")
@@ -23,20 +24,20 @@ stop_words = stop_words + f.read().split("\n")
 f.close()
 
 # # social
-# workbook = xlrd.open_workbook('data/test/social.xls')
-# print('data/test/social.xls')
-# sheet = workbook.sheet_by_index(0)
-# columns = [3]
-# row_start = 2
+file_name = 'social.xls'
+workbook = xlrd.open_workbook('data/test/social.xls')
+print('data/test/social.xls')
+sheet = workbook.sheet_by_index(0)
+columns = [3]
+row_start = 2
 
 # ifollow
-workbook = xlrd.open_workbook('data/test/ifollow.xls')
-print('data/test/ifollow.xls')
-sheet = workbook.sheet_by_index(0)
-columns = [3, 5, 7]
-row_start = 9
-length = 0
-totalLength = 0
+# file_name = 'ifollow.xls'
+# workbook = xlrd.open_workbook('data/test/ifollow.xls')
+# print('data/test/ifollow.xls')
+# sheet = workbook.sheet_by_index(0)
+# columns = [3, 5, 7]
+# row_start = 9
 
 for c in columns:
 	for r in range(row_start, sheet.nrows):
@@ -45,8 +46,9 @@ for c in columns:
 		tokenized = " ".join(lm_tokenizer.tokenize(content)).lower()
 		tokenized = tokenized.translate({ord(c): " " for c in "!@#$%^&*()[]{};:,./<>?\|`~-=-+'"}).split(" ")
 		# test time for half file
-		if totalLength > 50000:
-			break
+		# if totalLength > 200000:
+		# 	break
+		
 		for word in tokenized:
 			word = word.replace("_", " ").strip()
 			if len(word) == 1 or word in stop_words or (word.isnumeric() and int(word) < 100) or not bool(partern.match(word)):
@@ -76,7 +78,7 @@ for length in range(4):
 	# sort
 	words[length] = {k: v for k, v in sorted(words[length].items(), key=lambda item: item[1], reverse=True)}
 	iwords = iter(words[length])
-	f = open(f"top_word_longmatching_{length}.txt", "w")
+	f = open(f"results/{file_name}/top_word_longmatching_{length}.txt", "w")
 	out = ""
 	i = 0
 	for key in iwords:
